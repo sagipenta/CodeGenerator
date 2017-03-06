@@ -1,3 +1,5 @@
+'Define Global info here
+
 Public Range_TableSettings As Range
 Public Range_DataTableTemplates As Range
 
@@ -87,12 +89,17 @@ Public Function GetDepth(targetRange As Range, rowIndex As Long) As Long
     GetDepth = xOffset - Me.DatatableInitialIndex + 1
 End Function
 
-Public Function ReplaceKeys(replaceTarget As String, PropertyList As Range, p_repKeys() As String) As String
-    Dim typePrefix As String
-    Dim typeSuffix As String
+Public Function ReplaceKeys(replaceTarget As String, PropertyList As Range, p_repKeys() As String, Optional extentnion = "") As String
+    Dim typePrefix As String: typePrefix = ""
+    Dim typeSuffix As String: typeSuffix = ""
     For i = Me.DatatableInitialIndex To UBound(p_repKeys)
-        typePrefix = Me.GetTypePrefix(PropertyList.Cells(2, i))
-        typeSuffix = Me.GetTypeSuffix(PropertyList.Cells(2, i))
+        Select Case extentnion
+        Case "UE4CSV"
+        Case Else
+          typePrefix = Me.GetTypePrefix(PropertyList.Cells(2, i))
+          typeSuffix = Me.GetTypeSuffix(PropertyList.Cells(2, i))
+        End Select
+
         replaceTarget = Replace(replaceTarget, "<" & PropertyList.Cells(1, i) & ">", typePrefix & p_repKeys(i) & typeSuffix)
     Next i
 

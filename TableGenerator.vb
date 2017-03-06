@@ -133,44 +133,59 @@ Public Function OutputTable( _
                 If szCellWord <> "" Then
                     GoTo ToNextRow
                 End If
+            'Process loop End
             Case dtWidth
-                '行末までループが来たところで置き換え
-                szCellWord = genInfo.ReplaceKeys(settings.PropertyTable, settings.propertyList, rowValues)
+                'Different way for each extention
+                Select Case settings.FileFormat.Extention
 
-                'カテゴリ終端であればフッタを生成
-                If genInfo.GetIsCategoryEnd(settings.dataTable.Cells(dtRowIndex, dtColumnIndex)) Then
-                    Dim categoryDepth As Long
-                    categoryDepth = genInfo.GetDepth(settings.dataTable, dtRowIndex) - _
-                                                genInfo.GetDepth(settings.dataTable, dtRowIndex + 1)
-                    For categoryIndex = 1 To categoryDepth
-                        szCellWord = szCellWord & genInfo.GetTabByDepth(genInfo.GetDepth(settings.dataTable, dtRowIndex) - categoryIndex) & "}," & vbLf
-                    Next
-                End If
+                Case "UE4CSV"
+
+                Case Else
+                    '行末までループが来たところで置き換え
+                    szCellWord = genInfo.ReplaceKeys(settings.PropertyTable, settings.propertyList, rowValues)
+
+                    'カテゴリ終端であればフッタを生成
+                    If genInfo.GetIsCategoryEnd(settings.dataTable.Cells(dtRowIndex, dtColumnIndex)) Then
+                        Dim categoryDepth As Long
+                        categoryDepth = genInfo.GetDepth(settings.dataTable, dtRowIndex) - _
+                                                    genInfo.GetDepth(settings.dataTable, dtRowIndex + 1)
+                        For categoryIndex = 1 To categoryDepth
+                            szCellWord = szCellWord & genInfo.GetTabByDepth(genInfo.GetDepth(settings.dataTable, dtRowIndex) - categoryIndex) & "}," & vbLf
+                        Next
+                    End If
+                End Select
+
+            'Prosess common cells
             Case Else
-                'コードを自動生成
-                If genInfo.GetIsCategoryStart(settings.dataTable.Cells(dtRowIndex, dtColumnIndex)) Then
-                    categoryHeaderStartDepth = categoryHeaderStartDepth + 1
-                    headerTab = ""
-                    For chIndex = 1 To (dtColumnIndex - genInfo.DatatableInitialIndex + 1)
-                        headerTab = vbTab & headerTab
-                    Next
-                    szLineWord = headerTab & szCellWord & vbLf & headerTab & "{"
-                    szLineWord = Replace(szLineWord, vbLf, vbCrLf)
-                    szLineWord = Replace(szLineWord, "  ", vbTab)
-                    writeTarget.WriteText szLineWord, adWriteLine
-                    GoTo ToNextRow
-                End If
-                szCellWord = ""
+                'Different way for each extention
+                Select Case settings.FileFormat.Extention
 
+                Case "UE4CSV"
+
+                Case Else
+                  If genInfo.GetIsCategoryStart(settings.dataTable.Cells(dtRowIndex, dtColumnIndex)) Then
+                      categoryHeaderStartDepth = categoryHeaderStartDepth + 1
+                      headerTab = ""
+                      For chIndex = 1 To (dtColumnIndex - genInfo.DatatableInitialIndex + 1)
+                          headerTab = vbTab & headerTab
+                      Next
+                      szLineWord = headerTab & szCellWord & vbLf & headerTab & "{"
+                      szLineWord = Replace(szLineWord, vbLf, vbCrLf)
+                      szLineWord = Replace(szLineWord, "  ", vbTab)
+                      writeTarget.WriteText szLineWord, adWriteLine
+                      GoTo ToNextRow
+                  End If
+                  szCellWord = ""
+                End Select
             End Select
 
             '-------------------------------
             '結合処理
             '-------------------------------
             szLineWord = szLineWord & szPartitionTemp & szCellWord
-
+            szCellWord = ""
             lWriteSize = lWriteSize + 1
-            szPartitionTemp = szPartition   '次から区切り文字あり
+            szPartitionTemp = settings.FileFormat.Seperator   '次から区切り文字あり
 
         '行の出力
 ToNextColumn:
@@ -182,7 +197,7 @@ ToNextColumn:
         End If
 
         '行末の区切り文字のスキップなしだったら区切り文字をつける
-        If fSkipLineEndPartition = False Then szLineWord = szLineWord + szPartition
+        If fSkipLineEndPartition = False Then szLineWord = szLineWord + settings.FileFormat.Seperator
 
         '１行出力
         szLineWord = Replace(szLineWord, vbLf, vbCrLf)
