@@ -6,6 +6,8 @@ Public Range_DataTableTemplates As Range
 Public Range_ScriptSettings As Range
 Public Range_ScriptTemplates As Range
 
+Public Range_UE4Settings As Range
+
 Public Range_FileSettings As Range
 Public CommentIndex As Long
 Public AutoGenerateIndex As Long
@@ -18,6 +20,8 @@ Public Sub Class_Initialize()
 
     Set Range_ScriptSettings = Range("SS_ScriptSettings")
     Set Range_ScriptTemplates = Range("ST_ScriptTemplates")
+
+    Set Range_UE4Settings = Worksheets("UE4Settings").Range("US_UE4Settings")
 
     Set Range_FileSettings = Range("FS_FileSettings")
     CommentIndex = 1
@@ -138,14 +142,14 @@ Public Function GetDirectories(folderPaths() As String, targetRange As Range, ro
     GetDirectories = folderPaths
 End Function
 
-Public Function CreateDirectories(folderPaths() As String, targetDirectory As String, targetRange As Range, rowIndex As Long) As String
+Public Function CreateDirectories(folderPaths() As String, TargetDirectory As String, targetRange As Range, rowIndex As Long) As String
     Dim folderName As String: folderName = ""
     Dim depth As Long: depth = GetDepth(targetRange, rowIndex)
 
     For dirIndex = 1 To depth
         folderName = folderName & folderPaths(dirIndex)
-        If Dir(targetDirectory & folderName, vbDirectory) = "" Then
-            MkDir targetDirectory & folderName
+        If Dir(TargetDirectory & folderName, vbDirectory) = "" Then
+            MkDir TargetDirectory & folderName
         End If
     Next
     CreateDirectories = folderName
