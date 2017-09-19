@@ -90,7 +90,9 @@ Public Function OutputUE4Datatable( _
     '-------------------------------
     '開始処理。Datatable構造体メンバの定義部分作成
     For plIndex = 1 To settings.PropertyList.Columns.Count
-        szLineWord = szLineWord & settings.PropertyList.Cells(1,plIndex)
+        If plIndex <> 1 And plIndex <> 2 Then
+            szLineWord = szLineWord & settings.PropertyList.Cells(2,plIndex) & settings.FileFormat.Seperator
+        End If
     Next
     szLineWord = "---," & szLineWord
     writeTarget.WriteText szLineWord, adWriteLine
