@@ -1,31 +1,20 @@
 'Define Global info here
-
-Public Range_TableSettings As Range
-Public Range_DataTableTemplates As Range
-
-Public Range_ScriptSettings As Range
-Public Range_ScriptTemplates As Range
-
-Public Range_UE4Settings As Range
-
+Public Range_Templates As Range
 Public Range_FileSettings As Range
+
 Public CommentIndex As Long
 Public AutoGenerateIndex As Long
 Public DatatableInitialIndex As Long
 
 'Initializes Generator Global Information
 Public Sub Class_Initialize()
-    Set Range_TableSettings = Range("TS_TableSettings")
-    Set Range_DataTableTemplates = Range("TT_DataTableTemplates")
-
-    Set Range_ScriptSettings = Range("SS_ScriptSettings")
-    Set Range_ScriptTemplates = Range("ST_ScriptTemplates")
-
-    Set Range_UE4Settings = Worksheets("UE4Settings").Range("US_UE4Settings")
 
     Set Range_FileSettings = Range("FS_FileSettings")
+    Set Range_Templates = Range("T_Templates")
+
     CommentIndex = 1
     DatatableInitialIndex = 2
+
 End Sub
 
 Public Function GetIsCategoryStart(cell As Range) As Boolean

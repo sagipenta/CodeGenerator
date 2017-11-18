@@ -8,6 +8,8 @@ Private m_Index_end As String
 Private m_arrayOperator_start As String
 Private m_arrayOperator_end As String
 
+'--------------Custom Classes--------------
+
 Private m_genInfo As GeneratorInfo
 
 '--------------Properties--------------

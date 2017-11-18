@@ -8,39 +8,14 @@
 'Each range's prefix samples initial letters of its sheet name
 Dim genInfo As GeneratorInfo
 
-Sub GenerateUE4Datatable()
-    Set genInfo = New GeneratorInfo
-    Dim fso As Object: Set fso = CreateObject("Scripting.FileSystemObject")
-    ChDrive ThisWorkbook.Path
-    ChDir ThisWorkbook.Path
-
-    Dim tsWidth As Long: tsWidth = genInfo.Range_UE4Settings.Columns.Count
-    Dim tsHeight As Long: tsHeight = genInfo.Range_UE4Settings.Rows.Count
-
-    Dim sets() As UE4Settings
-    ReDim sets(tsHeight)
-
-    For setIndex = 1 To tsHeight
-        Dim settings As UE4Settings
-        Set settings = New UE4Settings
-        Call settings.Init(setIndex)
-        If settings.NeedsGenerate Then
-            Set sets(setIndex) = settings
-            settings.ProjectRoot = fso.GetAbsolutePathName(settings.ProjectRoot)
-            Call OutputUE4Datatable(sets(setIndex))
-        End If
-    Next
-    Set fso = Nothing
-    Set genInfo = Nothing
-
-End Sub
 
 Public Function OutputUE4Datatable( _
-    settings As UE4Settings, _
+    settings As DataSettings, _
     Optional fSkipHiddenCell As Boolean = False, _
     Optional fSkipNullCell As Boolean = False, _
     Optional fSkipLineEndPartition As Boolean = True _
 ) As Long
+    Set genInfo = New GeneratorInfo
 
     Dim dtWidth As Long      'レンジの横サイズ
     Dim dtHeight As Long     'レンジの縦サイズ
@@ -89,10 +64,8 @@ Public Function OutputUE4Datatable( _
     '出力
     '-------------------------------
     '開始処理。Datatable構造体メンバの定義部分作成
-    For plIndex = 1 To settings.PropertyList.Columns.Count
-        If plIndex <> 1 And plIndex <> 2 Then
-            szLineWord = szLineWord & settings.PropertyList.Cells(2,plIndex) & settings.FileFormat.Seperator
-        End If
+    For plIndex = 3 To settings.PropertyList.Columns.Count
+        szLineWord = szLineWord & settings.PropertyList.Cells(1,plIndex).Value & ","
     Next
     szLineWord = "---," & szLineWord
     writeTarget.WriteText szLineWord, adWriteLine
@@ -187,11 +160,12 @@ ToNextRow:
 
 ErrorHandler:
     If Err.Number <> 0 Then
-        MsgBox targetFullPath & "の書き込みを中断します。（エラー番号" & Err.Number & "）"
+        MsgBox "Abort creating" & targetFullPath & "（Error Number:" & Err.Number & "）"
     End If
 
-    MsgBox targetFullPath & "の作成が完了しました"
+    MsgBox targetFullPath & " has created"
 
+    Set genInfo = Nothing
     '戻り値は読み込んだ要素数
     OutputUE4Datatable = lWriteSize
 
