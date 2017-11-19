@@ -30,6 +30,10 @@ Public Function OutputLuaScript( _
     Dim fileName As String
     Dim folderName As String
 
+    'Create target directory, if there isn't
+    If Dir(settings.ProjectRoot & settings.TargetDirectory, vbDirectory) = "" Then
+        MkDir settings.ProjectRoot & settings.TargetDirectory
+    End If
     dtWidth = settings.DataTable.Columns.Count
     dtHeight = settings.DataTable.Rows.Count
     lWriteSize = 0
