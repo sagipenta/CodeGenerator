@@ -207,14 +207,15 @@ ToNextRow:
     '書き込んだファイルの保存
     newStream.SaveToFile targetFullPath, adSaveCreateOverwrite
     newStream.Close
-    Set genInfo = Nothing
 
-ErrorHandler:
-    If Err.Number <> 0 Then
-        MsgBox targetFullPath & "の書き込みを中断します。（エラー番号" & Err.Number & "）"
-    End If
+    ErrorHandler:
+        If Err.Number <> 0 Then
+            MsgBox "Abort creating" & targetFullPath & "（Error Number:" & Err.Number & "）"
+        End If
 
-    MsgBox targetFullPath & "の作成が完了しました"
+        Set genInfo = Nothing
+
+        MsgBox targetFullPath & " has created"
 
     '戻り値は読み込んだ要素数
     OutputTable = lWriteSize
