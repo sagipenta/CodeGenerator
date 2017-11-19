@@ -15,6 +15,8 @@ Private m_projectRoot As String
 Private m_targetDirectory As String
 Private m_fileName As String
 
+Private m_folderPaths() As String
+
 '--------------Custom Classes--------------
 
 Private m_genInfo As GeneratorInfo
@@ -125,6 +127,21 @@ Public Sub Class_Terminate()
     Set m_fileFormat = Nothing
     Set m_template = Nothing
 End Sub
+Public Function GetFolderPaths() As String()
+    GetFolderPaths = m_folderPaths
+End Function
+
+Public Sub SetFolderPaths(val() As String)
+    m_folderPaths = val
+End Sub
+
+Public Function GetFolderPath(index As Long) As String
+    GetFolderPath = m_folderPaths(index)
+End Function
+
+Public Sub SetFolderPath(index As Long, val As String)
+    m_folderPaths(index) = val
+End Sub
 
 'Data sampling from "TableSettings" sheet
 Public Sub Init(ByVal targetRange As Range)
@@ -156,6 +173,7 @@ Public Sub Init(ByVal targetRange As Range)
                 If targetRange.Cells(dsRowIndex, dsColumnIndex).Value <> "" Then
                     Me.DataTable = Range(targetRange.Cells(dsRowIndex, dsColumnIndex).Value)
                 End If
+                ReDim m_folderPaths(Me.DataTable.Columns.Count)
             Case 4 'PropertyList'
                 If targetRange.Cells(dsRowIndex, dsColumnIndex).Value <> "" Then
                     Me.PropertyList = Range(targetRange.Cells(dsRowIndex, dsColumnIndex).Value)
@@ -170,11 +188,11 @@ Public Sub Init(ByVal targetRange As Range)
                 m_genInfo.Range_FileSettings.Cells(1, 1).Row + 1
                 Call Me.FileFormat.Init(fileFormatIndex)
             Case 7 'ProjectRoot'
-            Me.ProjectRoot = fso.GetAbsolutePathName(targetRange.Cells(dsRowIndex, dsColumnIndex).Value)
+                Me.ProjectRoot = fso.GetAbsolutePathName(targetRange.Cells(dsRowIndex, dsColumnIndex).Value)
             Case 8 'TargetDirectory'
                 Me.TargetDirectory = targetRange.Cells(dsRowIndex, dsColumnIndex).Value
             Case 9 'FileName'
-            Me.FileName = targetRange.Cells(dsRowIndex, dsColumnIndex).Value
+                Me.FileName = targetRange.Cells(dsRowIndex, dsColumnIndex).Value
             Case Else
                 MsgBox "Property doesn't exist. Index:" & Str(dsRowIndex)
         End Select

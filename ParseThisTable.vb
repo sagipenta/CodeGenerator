@@ -1,3 +1,9 @@
+'===============================================================================
+'   @ScriptName: ScriptGenerator
+'   @Developed by: Shigeki Saito
+'   @Date:2017 Nov.
+'===============================================================================
+
 Sub ParseThisTable()
     Dim settings As DataSettings
     Set Settings = New DataSettings
@@ -7,9 +13,9 @@ Sub ParseThisTable()
     Case "UE4Datatable"
         Call UE4DatatableGenerator.OutputUE4Datatable(settings)
     Case "LuaScript"
-        'Call OutputLuaScript(settings)
+        Call ScriptGenerator.OutputLuaScript(settings)
     Case "LuaTable"
-        'Call OutputLuaTable(settings)
+        Call OutputLuaTable(settings)
     Case Else
         MsgBox "Irregal GenerationType: " & settings.GenerationType
     End Select

@@ -158,6 +158,8 @@ ToNextRow:
     newStream.SaveToFile targetFullPath, adSaveCreateOverwrite
     newStream.Close
 
+    Set genInfo = Nothing
+
 ErrorHandler:
     If Err.Number <> 0 Then
         MsgBox "Abort creating" & targetFullPath & "（Error Number:" & Err.Number & "）"
@@ -165,7 +167,6 @@ ErrorHandler:
 
     MsgBox targetFullPath & " has created"
 
-    Set genInfo = Nothing
     '戻り値は読み込んだ要素数
     OutputUE4Datatable = lWriteSize
 

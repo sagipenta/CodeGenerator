@@ -17,7 +17,7 @@ Property Let TemplateRow(val As Range)
 End Property
 
 Property Get TemplateRow() As Range
-    TemplateRow = m_templateRow
+    Set TemplateRow = m_templateRow
 End Property
 
 'HeaderComment
@@ -75,8 +75,8 @@ End Sub
 
 'Data sampling from "TableSettings" sheet
 Public Sub Init(ByVal templateName As String)
-    Me.TemplateRow = m_genInfo.Range_Templates.Find(What:=templateName).Columns
-
+    Me.TemplateRow = m_genInfo.Range_Templates.Rows(m_genInfo.Range_Templates.Find(What:=templateName).Row - _
+                m_genInfo.Range_Templates.Cells(1, 1).Row + 1)
     'Data sampling from "Template"
     Dim tWidth As Long: tWidth = Me.TemplateRow.Columns.Count
     Dim tIndex As Long: tIndex = 1
@@ -92,6 +92,7 @@ Public Sub Init(ByVal templateName As String)
                 Me.PropertyTable = Me.TemplateRow.Cells(tIndex, tColumnIndex).Value
             Case 5
                 Me.Footer = Me.TemplateRow.Cells(tIndex, tColumnIndex).Value
+            Case 6
             Case Else
                 MsgBox "Property doesn't exist. Index:" & Str(tColumnIndex)
         End Select

@@ -8,39 +8,13 @@
 'Each range's prefix samples initial letters of its sheet name
 Dim genInfo As GeneratorInfo
 
-Sub GenerateTables()
-    Set genInfo = New GeneratorInfo
-    Dim fso As Object: Set fso = CreateObject("Scripting.FileSystemObject")
-    ChDrive ThisWorkbook.Path
-    ChDir ThisWorkbook.Path
-
-    Dim tsWidth As Long: tsWidth = genInfo.Range_TableSettings.Columns.Count
-    Dim tsHeight As Long: tsHeight = genInfo.Range_TableSettings.Rows.Count
-
-    Dim sets() As TableSettings
-    ReDim sets(tsHeight)
-
-    For setIndex = 1 To tsHeight
-        Dim settings As TableSettings
-        Set settings = New TableSettings
-        Call settings.Init(setIndex)
-        If settings.NeedsGenerate Then
-            Set sets(setIndex) = settings
-            settings.ProjectRoot = fso.GetAbsolutePathName(settings.ProjectRoot)
-            Call OutputTable(sets(setIndex))
-        End If
-    Next
-    Set fso = Nothing
-    Set genInfo = Nothing
-
-End Sub
-
-Public Function OutputTable( _
-    settings As TableSettings, _
+Public Function OutputLuaTable( _
+    settings As DataSettings, _
     Optional fSkipHiddenCell As Boolean = False, _
     Optional fSkipNullCell As Boolean = False, _
     Optional fSkipLineEndPartition As Boolean = True _
 ) As Long
+    Set genInfo = New GeneratorInfo
 
     Dim dtWidth As Long      'レンジの横サイズ
     Dim dtHeight As Long     'レンジの縦サイズ
@@ -91,7 +65,7 @@ Public Function OutputTable( _
     '-------------------------------
 
     '開始処理。クラスヘッダの作成を行う
-    szLineWord = settings.HeaderComment & vbLf & settings.Header
+    szLineWord = settings.Template.HeaderComment & vbLf & settings.Template.Header
 
     '改行コードをCRLF、スペースをタブに矯正
     szLineWord = Replace(szLineWord, vbLf, vbCrLf)
@@ -142,7 +116,7 @@ Public Function OutputTable( _
 
                 Case Else
                     '行末までループが来たところで置き換え
-                    szCellWord = genInfo.ReplaceKeys(settings.PropertyTable, settings.propertyList, rowValues)
+                    szCellWord = genInfo.ReplaceKeys(settings.Template.PropertyTable, settings.propertyList, rowValues)
 
                     'カテゴリ終端であればフッタを生成
                     If genInfo.GetIsCategoryEnd(settings.dataTable.Cells(dtRowIndex, dtColumnIndex)) Then
@@ -185,7 +159,6 @@ Public Function OutputTable( _
             szLineWord = szLineWord & szPartitionTemp & szCellWord
             szCellWord = ""
             lWriteSize = lWriteSize + 1
-            szPartitionTemp = settings.FileFormat.Seperator   '次から区切り文字あり
 
         '行の出力
 ToNextColumn:
@@ -208,7 +181,7 @@ ToNextRow:
     Next
 
     'EOL
-    szLineWord = settings.Footer
+    szLineWord = settings.Template.Footer
     szLineWord = Replace(szLineWord, vbLf, vbCrLf)
     szLineWord = Replace(szLineWord, "  ", vbTab)
     writeTarget.WriteText szLineWord, adWriteLine
@@ -234,6 +207,7 @@ ToNextRow:
     '書き込んだファイルの保存
     newStream.SaveToFile targetFullPath, adSaveCreateOverwrite
     newStream.Close
+    Set genInfo = Nothing
 
 ErrorHandler:
     If Err.Number <> 0 Then
