@@ -52,8 +52,8 @@ Public Function OutputLuaTable( _
     writeTarget.Charset = "UTF-8" '文字コードを指定
     writeTarget.Open 'オブジェクトをインスタンス化
 
-    dtWidth = settings.dataTable.Columns.Count
-    dtHeight = settings.dataTable.Rows.Count
+    dtWidth = settings.DataTable.Columns.Count
+    dtHeight = settings.DataTable.Rows.Count
     lWriteSize = 0
 
     '検索置換用の文字列を入れる配列
@@ -75,7 +75,7 @@ Public Function OutputLuaTable( _
     '1行ごとに文字列を抽出してLuaコード化していく
     For dtRowIndex = 1 To dtHeight
         '非表示セルのチェックありで非表示セルだったら出力しない
-        If fSkipHiddenCell And settings.dataTable.Rows(dtRowIndex).Hidden Then
+        If fSkipHiddenCell And settings.DataTable.Rows(dtRowIndex).Hidden Then
             GoTo ToNextRow
         End If
 
@@ -86,12 +86,12 @@ Public Function OutputLuaTable( _
         For dtColumnIndex = 1 To dtWidth
 
             '非表示セルのチェックありで非表示セルだったら出力しない
-            If fSkipHiddenCell And settings.dataTable.Columns(dtColumnIndex).Hidden Then
+            If fSkipHiddenCell And settings.DataTable.Columns(dtColumnIndex).Hidden Then
                 GoTo ToNextColumn
             End If
 
             '行内の1列の文字列抽出
-            szCellWord = settings.dataTable.Cells(dtRowIndex, dtColumnIndex)
+            szCellWord = settings.DataTable.Cells(dtRowIndex, dtColumnIndex)
 
             '空白スキップかつ空セルだったら出力しない
             If fSkipNullCell And szCellWord = "" Then
@@ -108,7 +108,7 @@ Public Function OutputLuaTable( _
                     GoTo ToNextRow
                 End If
             'Process loop End
-            Case dtWidth
+            Case dtWidth - 1
                 'Different way for each extention
                 Select Case settings.FileFormat.Extention
 
@@ -119,12 +119,12 @@ Public Function OutputLuaTable( _
                     szCellWord = genInfo.ReplaceKeys(settings.Template.PropertyTable, settings.propertyList, rowValues)
 
                     'カテゴリ終端であればフッタを生成
-                    If genInfo.GetIsCategoryEnd(settings.dataTable.Cells(dtRowIndex, dtColumnIndex)) Then
+                    If genInfo.GetIsCategoryEnd(settings.DataTable.Cells(dtRowIndex, dtColumnIndex)) Then
                         Dim categoryDepth As Long
-                        categoryDepth = genInfo.GetDepth(settings.dataTable, dtRowIndex) - _
-                                                    genInfo.GetDepth(settings.dataTable, dtRowIndex + 1)
+                        categoryDepth = genInfo.GetDepth(settings.DataTable, dtRowIndex) - _
+                                                    genInfo.GetDepth(settings.DataTable, dtRowIndex + 1)
                         For categoryIndex = 1 To categoryDepth
-                            szCellWord = szCellWord & genInfo.GetTabByDepth(genInfo.GetDepth(settings.dataTable, dtRowIndex) - categoryIndex) & "}," & vbLf
+                            szCellWord = szCellWord & genInfo.GetTabByDepth(genInfo.GetDepth(settings.DataTable, dtRowIndex) - categoryIndex) & "}," & vbLf
                         Next
                     End If
                 End Select
@@ -137,10 +137,10 @@ Public Function OutputLuaTable( _
                 Case "UE4CSV"
 
                 Case Else
-                  If genInfo.GetIsCategoryStart(settings.dataTable.Cells(dtRowIndex, dtColumnIndex)) Then
+                  If genInfo.GetIsCategoryStart(settings.DataTable.Cells(dtRowIndex, dtColumnIndex)) Then
                       categoryHeaderStartDepth = categoryHeaderStartDepth + 1
                       headerTab = ""
-                      For chIndex = 1 To (dtColumnIndex - genInfo.DatatableInitialIndex + 1)
+                      For chIndex = 1 To (dtColumnIndex - genInfo.DataTableInitialIndex + 1)
                           headerTab = vbTab & headerTab
                       Next
                       szLineWord = headerTab & szCellWord & vbLf & headerTab & "{"

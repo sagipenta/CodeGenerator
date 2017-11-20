@@ -81,7 +81,7 @@ Public Function OutputLuaScript( _
                 If szCellWord <> "" Then
                     GoTo ToNextRow
                 End If
-            Case dtWidth
+            Case dtWidth - 1
                 '行末までループが来たところで置き換え
                 szCellWord = genInfo.ReplaceKeys(settings.Template.PropertyTable, settings.PropertyList, rowValues)
 
