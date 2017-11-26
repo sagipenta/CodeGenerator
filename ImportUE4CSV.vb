@@ -22,11 +22,17 @@ Sub ImportUE4CSV()
     Dim csvRows As Variant
 
     Open fileToOpen For Input As #1
+
+    'Write in CSV to Excel'
     Do Until EOF(1)
 		Line Input #1, csvBuf
         csvRows = Split(csvBuf,",")
-
-        If csvRows(0) <> "---" And settings.DataTable.Rows(dtColumn).Cells(1, 1).Value = "" Then
+        If settings.DataTable.Rows(dtColumn).Cells(1,1).Value = "#" Then
+            ActiveSheet.Rows(settings.DataTable.Rows(dtColumn).Row).Insert
+            ActiveSheet.Rows(settings.DataTable.Rows(dtColumn-1).Row).Copy
+            ActiveSheet.Rows(settings.DataTable.Rows(dtColumn).Row).PasteSpecial(xlPasteFormats)
+        End If
+        If csvRows(0) <> "---" And settings.DataTable.Rows(dtColumn).Cells(1, 1).Value = "" Then 'Skip 1st and commented out rows'
             With settings.DataTable.Rows(dtColumn)
                 For i = 1 To .Columns.Count
                     If i <> 1 And i <> .Columns.Count Then
@@ -36,8 +42,12 @@ Sub ImportUE4CSV()
             End With
         End If
         dtColumn = dtColumn + 1
-
 	Loop
+
+    'Erace excess rows'
+    Do While settings.DataTable.Rows(dtColumn).Cells(1, 2).Value <> ""
+        ActiveSheet.Rows(settings.DataTable.Rows(dtColumn).Row).Delete
+    Loop
 
     MsgBox "Finished Importing: " & fileToOpen
 
