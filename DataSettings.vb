@@ -4,10 +4,10 @@
 '   @Date:2017 Nov.
 '===============================================================================
 
-
 '--------------Members--------------
 Private m_needsGenerate As Boolean
-Private m_generationType As String
+Private m_generationFormat As String
+Private m_exportingType As String
 Private m_dataTable As Range
 Private m_propertyList As Range
 Private m_template As TemplateSettings
@@ -33,15 +33,26 @@ Property Get NeedsGenerate() As Boolean
     NeedsGenerate = m_needsGenerate
 End Property
 
-'GenerationType
-Property Let GenerationType(val As String)
+'GenerationFormat
+Property Let GenerationFormat(val As String)
     If val <> "" Then
-        m_generationType = val
+        m_generationFormat = val
     End If
 End Property
 
-Property Get GenerationType() As String
-    GenerationType = m_generationType
+Property Get GenerationFormat() As String
+    GenerationFormat = m_generationFormat
+End Property
+
+'ExportingType
+Property Let ExportingType(val As String)
+    If val <> "" Then
+        m_exportingType = val
+    End If
+End Property
+
+Property Get ExportingType() As String
+    ExportingType = m_exportingType
 End Property
 
 'Datatable
@@ -165,33 +176,37 @@ Public Sub Init(ByVal targetRange As Range)
                 Else
                     Me.NeedsGenerate = False
                 End If
-            Case 2 'GenerationType'
+            Case 2 'GenerationFormat'
                 If targetRange.Cells(dsRowIndex, dsColumnIndex).Value <> "" Then
-                    Me.GenerationType = targetRange.Cells(dsRowIndex, dsColumnIndex).Value
+                    Me.GenerationFormat = targetRange.Cells(dsRowIndex, dsColumnIndex).Value
                 End If
-            Case 3 'DataTable'
+            Case 3 'ExportingType'
+                If targetRange.Cells(dsRowIndex, dsColumnIndex).Value <> "" Then
+                    Me.ExportingType = targetRange.Cells(dsRowIndex, dsColumnIndex).Value
+                End If
+            Case 4 'DataTable'
                 If targetRange.Cells(dsRowIndex, dsColumnIndex).Value <> "" Then
                     Me.DataTable = Range(targetRange.Cells(dsRowIndex, dsColumnIndex).Value)
                 End If
                 ReDim m_folderPaths(Me.DataTable.Columns.Count)
-            Case 4 'PropertyList'
+            Case 5 'PropertyList'
                 If targetRange.Cells(dsRowIndex, dsColumnIndex).Value <> "" Then
                     Me.PropertyList = Range(targetRange.Cells(dsRowIndex, dsColumnIndex).Value)
                 End If
-            Case 5 'Template'
+            Case 6 'Template'
                 If targetRange.Cells(dsRowIndex, dsColumnIndex).Value <> "" Then
                     Call Me.Template.Init(targetRange.Cells(dsRowIndex, dsColumnIndex).Value)
                 End If
-            Case 6 'FileFormat'
+            Case 7 'FileFormat'
                 Dim fileFormatIndex As Long
                 fileFormatIndex = m_genInfo.Range_FileSettings.Find(What:=targetRange.Cells(dsRowIndex, dsColumnIndex).Value).Row - _
                 m_genInfo.Range_FileSettings.Cells(1, 1).Row + 1
                 Call Me.FileFormat.Init(fileFormatIndex)
-            Case 7 'ProjectRoot'
+            Case 8 'ProjectRoot'
                 Me.ProjectRoot = fso.GetAbsolutePathName(targetRange.Cells(dsRowIndex, dsColumnIndex).Value)
-            Case 8 'TargetDirectory'
+            Case 9 'TargetDirectory'
                 Me.TargetDirectory = targetRange.Cells(dsRowIndex, dsColumnIndex).Value
-            Case 9 'FileName'
+            Case 10 'FileName'
                 Me.FileName = targetRange.Cells(dsRowIndex, dsColumnIndex).Value
             Case Else
                 MsgBox "Property doesn't exist. Index:" & Str(dsRowIndex)

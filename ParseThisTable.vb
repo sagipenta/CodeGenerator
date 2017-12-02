@@ -4,11 +4,15 @@
 '   @Date:2017 Nov.
 '===============================================================================
 
+
+
 Sub ParseThisTable()
+    Dim genInfo As GeneratorInfo
+    Set genInfo = New GeneratorInfo
     Dim settings As DataSettings
     Set Settings = New DataSettings
-    Call settings.Init(ActiveSheet.Range("D3:D11"))
-    Select Case settings.GenerationType
+    Call settings.Init(ActiveSheet.Range(genInfo.DataSettingsRange))
+    Select Case settings.GenerationFormat
 
     Case "UE4Datatable"
         Call UE4DatatableGenerator.OutputUE4Datatable(settings)
@@ -17,7 +21,7 @@ Sub ParseThisTable()
     Case "LuaTable"
         Call OutputLuaTable(settings)
     Case Else
-        MsgBox "Irregal GenerationType: " & settings.GenerationType
+        MsgBox "Irregal GenerationFormat: " & settings.GenerationFormat
     End Select
 
     Set settings = Nothing

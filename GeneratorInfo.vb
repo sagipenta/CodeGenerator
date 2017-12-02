@@ -6,6 +6,8 @@ Public CommentIndex As Long
 Public AutoGenerateIndex As Long
 Public DatatableInitialIndex As Long
 
+Public DataSettingsRange As string
+
 'Initializes Generator Global Information
 Public Sub Class_Initialize()
 
@@ -14,6 +16,8 @@ Public Sub Class_Initialize()
 
     CommentIndex = 1
     DatatableInitialIndex = 2
+
+    DataSettingsRange = "D3:D12"
 
 End Sub
 

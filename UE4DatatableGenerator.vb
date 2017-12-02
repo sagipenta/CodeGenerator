@@ -4,8 +4,6 @@
 '   2017 Sep.
 '===============================================================================
 
-'Sampling Targets(Range) have to be defined here
-'Each range's prefix samples initial letters of its sheet name
 Dim genInfo As GeneratorInfo
 
 
