@@ -5,7 +5,7 @@
 '===============================================================================
 
 Sub ParseAllTables()
-
+    Dim InitialSheetName As String: InitialSheetName = ActiveSheet.Name
     For Each sheet In WorkSheets
         sheet.Activate
         sheet.Select
@@ -13,4 +13,5 @@ Sub ParseAllTables()
             Call ParseThisTable.ParseThisTable
         End If
     Next sheet
+    WorkSheets(InitialSheetName).Select
 End Sub
