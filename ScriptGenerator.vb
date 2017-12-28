@@ -8,7 +8,7 @@
 'Each range's prefix samples initial letters of its sheet name
 Dim genInfo As GeneratorInfo
 
-Public Function OutputLuaScript( _
+Public Function OutputScript( _
     settings As DataSettings, _
     Optional fSkipHiddenCell As Boolean = False, _
     Optional fSkipNullCell As Boolean = False, _

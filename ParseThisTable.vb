@@ -16,10 +16,10 @@ Sub ParseThisTable()
 
     Case "UE4Datatable"
         Call UE4DatatableGenerator.OutputUE4Datatable(settings)
-    Case "LuaScript"
-        Call ScriptGenerator.OutputLuaScript(settings)
-    Case "LuaTable"
-        Call OutputLuaTable(settings)
+    Case "ScriptGenerator"
+        Call ScriptGenerator.OutputScript(settings)
+    Case "TableGenerator"
+        Call OutputTable(settings)
     Case Else
         MsgBox "Irregal GenerationFormat: " & settings.GenerationFormat
     End Select
