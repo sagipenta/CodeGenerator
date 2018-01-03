@@ -76,7 +76,7 @@ Public Sub ExportConcatTable()
         Sheet.Select
         Call settings.Init(ActiveSheet.Range(genInfo.DataSettingsRange))
 
-        If settings.ExportingType = "Concat" Then
+        If ActiveSheet.Range("D5").Value = "Concat" Then
 
             '-------------------------------
             '出力
