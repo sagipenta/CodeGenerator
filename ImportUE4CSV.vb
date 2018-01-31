@@ -16,7 +16,7 @@ Sub ImportUE4CSV()
     Set settings = New DataSettings
     Call settings.Init(ActiveSheet.Range("D3:D11"))
 
-    Dim dtColumn As Long: dtColumn = 2
+    Dim dtColumn As Long: dtColumn = 1
 
     Dim csvBuf As String
     Dim csvRows As Variant
