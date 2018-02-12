@@ -171,10 +171,16 @@ End Function
 
 Public Function GetTypePrefix(propertyType As String) As String
     Select Case propertyType
-    Case "string"
-        GetTypePrefix = """"
     Case "array"
         GetTypePrefix = "{"
+    Case "string"
+        GetTypePrefix = """"
+    Case "String"
+        GetTypePrefix = """"
+    Case "Name"
+        GetTypePrefix = """"
+    Case "Text"
+        GetTypePrefix = """"
     Case Else
         GetTypePrefix = ""
     End Select
@@ -182,10 +188,16 @@ End Function
 
 Public Function GetTypeSuffix(propertyType As String) As String
     Select Case propertyType
-    Case "string"
-        GetTypeSuffix = """"
     Case "array"
         GetTypeSuffix = "}"
+    Case "string"
+        GetTypeSuffix = """"
+    Case "String"
+        GetTypeSuffix = """"
+    Case "Name"
+        GetTypeSuffix = """"
+    Case "Text"
+        GetTypeSuffix = """"
     Case Else
         GetTypeSuffix = ""
     End Select
